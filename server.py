@@ -1,5 +1,15 @@
+import os
 from fastmcp import FastMCP
+from fastmcp.server.auth.auth import AccessToken, TokenVerifier
 from tools.code_librarian import register_tools
 
-mcp = FastMCP("code-librarian-mcp")
+
+class StaticTokenVerifier(TokenVerifier):
+    async def verify_token(self, token: str) -> AccessToken | None:
+        if token == os.environ["MCP_SECRET_TOKEN"]:
+            return AccessToken(token=token, client_id="client", scopes=[])
+        return None
+
+
+mcp = FastMCP("code-librarian-mcp", auth=StaticTokenVerifier())
 register_tools(mcp)

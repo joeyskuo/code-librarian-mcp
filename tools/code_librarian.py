@@ -24,7 +24,7 @@ def register_tools(mcp: FastMCP):
 
     @mcp.tool()
     def check_repository_status(repo_url: str) -> dict:
-        """Check how many embedding chunks exist for a repository.
+        """Check if a repository has embeddings, so that it is able to be queried.
 
         Use this before querying a repository to confirm it has been embedded.
         If embeddings is 0, the repository must be embedded first using embed_repository.

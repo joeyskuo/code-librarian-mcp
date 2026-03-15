@@ -42,7 +42,7 @@ class CodeLibrarianClient:
 
     def check_repository_status(self, repo_url: str) -> RepoStatus:
         repo_url = self._normalize_github_url(repo_url)
-        response = httpx.post(f"{self.base_url}/repo-status", json={"repo_url": repo_url})
+        response = httpx.get(f"{self.base_url}/repo-status", params={"repo_url": repo_url})
         response.raise_for_status()
         data = response.json()
         logger.info("check_repository_status response: %s", data)

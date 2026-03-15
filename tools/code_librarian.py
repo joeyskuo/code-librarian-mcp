@@ -21,3 +21,29 @@ def register_tools(mcp: FastMCP):
         """
         results = client.query_repo(query, repo_url)
         return [vars(r) for r in results]
+
+    @mcp.tool()
+    def check_repository_status(repo_url: str) -> dict:
+        """Check how many embedding chunks exist for a repository.
+
+        Use this before querying a repository to confirm it has been embedded.
+        If embeddings is 0, the repository must be embedded first using embed_repository.
+
+        repo_url must be a GitHub repository URL (e.g. https://github.com/owner/repo).
+
+        Returns: repo (str), embeddings (int).
+        """
+        return vars(client.check_repository_status(repo_url))
+
+    @mcp.tool()
+    def embed_repository(repo_url: str) -> dict:
+        """Embed a GitHub repository so it can be queried.
+
+        Initiates the embedding process for all code files in the repository.
+        Run this if check_repository_status shows 0 embeddings.
+
+        repo_url must be a GitHub repository URL (e.g. https://github.com/owner/repo).
+
+        Returns: repo (str), files_found (int), stored (int), skipped (int).
+        """
+        return vars(client.embed_repository(repo_url))

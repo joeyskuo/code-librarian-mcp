@@ -14,6 +14,20 @@ class RepoQueryResult:
     similarity: float
 
 
+@dataclass
+class RepoStatus:
+    repo: str
+    embeddings: int
+
+
+@dataclass
+class EmbedResult:
+    repo: str
+    files_found: int
+    stored: int
+    skipped: int
+
+
 class CodeLibrarianClient:
     def __init__(self, base_url: str):
         self.base_url = base_url
@@ -25,6 +39,22 @@ class CodeLibrarianClient:
         data = response.json()
         logger.info("query_repo response: %s", data)
         return [RepoQueryResult(**item) for item in data]
+
+    def check_repository_status(self, repo_url: str) -> RepoStatus:
+        repo_url = self._normalize_github_url(repo_url)
+        response = httpx.post(f"{self.base_url}/repo-status", json={"repo_url": repo_url})
+        response.raise_for_status()
+        data = response.json()
+        logger.info("check_repository_status response: %s", data)
+        return RepoStatus(**data)
+
+    def embed_repository(self, repo_url: str) -> EmbedResult:
+        repo_url = self._normalize_github_url(repo_url)
+        response = httpx.post(f"{self.base_url}/embed-repo", json={"repo_url": repo_url})
+        response.raise_for_status()
+        data = response.json()
+        logger.info("embed_repository response: %s", data)
+        return EmbedResult(**data)
 
     def _normalize_github_url(self, url: str) -> str:
         import re

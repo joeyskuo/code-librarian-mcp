@@ -1,10 +1,10 @@
 import os
 from fastmcp import FastMCP
-from services.rag_client import RagClient
+from services.code_librarian_service import CodeLibrarianClient
 
 
 def register_tools(mcp: FastMCP):
-    client = RagClient(base_url=os.environ["RAG_BASE_URL"])
+    client = CodeLibrarianClient(base_url=os.environ["RAG_BASE_URL"])
 
     @mcp.tool()
     def find_relevant_code(query: str) -> list[dict]:

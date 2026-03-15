@@ -6,4 +6,10 @@ dependencies = [
     "fastmcp",
     "httpx",
     "python-dotenv",
+    "opentelemetry-sdk",
+    "opentelemetry-exporter-otlp-proto-http",
 ]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["tools*", "services*"]

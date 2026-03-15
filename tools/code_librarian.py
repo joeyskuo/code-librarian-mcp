@@ -4,7 +4,7 @@ from services.code_librarian_service import CodeLibrarianClient
 
 
 def register_tools(mcp: FastMCP):
-    client = CodeLibrarianClient(base_url=os.environ["RAG_BASE_URL"])
+    client = CodeLibrarianClient(base_url=os.environ["CL_API_URL"], api_key=os.environ["CL_API_KEY"])
 
     @mcp.tool()
     def query_repository_code(query: str, repo_url: str) -> list[dict]:

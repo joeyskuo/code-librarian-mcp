@@ -29,12 +29,13 @@ class EmbedResult:
 
 
 class CodeLibrarianClient:
-    def __init__(self, base_url: str):
+    def __init__(self, base_url: str, api_key: str):
         self.base_url = base_url
+        self.headers = {"X-API-KEY": api_key}
 
     def query_repo(self, query: str, repo_url: str) -> list[RepoQueryResult]:
         repo_url = self._normalize_github_url(repo_url)
-        response = httpx.post(f"{self.base_url}/query-repo", json={"query": query, "repo_url": repo_url})
+        response = httpx.post(f"{self.base_url}/query-repo", json={"query": query, "repo_url": repo_url}, headers=self.headers)
         response.raise_for_status()
         data = response.json()
         logger.info("query_repo response: %s", data)
@@ -42,7 +43,7 @@ class CodeLibrarianClient:
 
     def check_repository_status(self, repo_url: str) -> RepoStatus:
         repo_url = self._normalize_github_url(repo_url)
-        response = httpx.get(f"{self.base_url}/repo-status", params={"repo_url": repo_url})
+        response = httpx.get(f"{self.base_url}/repo-status", params={"repo_url": repo_url}, headers=self.headers)
         response.raise_for_status()
         data = response.json()
         logger.info("check_repository_status response: %s", data)
@@ -50,7 +51,7 @@ class CodeLibrarianClient:
 
     def embed_repository(self, repo_url: str) -> EmbedResult:
         repo_url = self._normalize_github_url(repo_url)
-        response = httpx.post(f"{self.base_url}/embed-repo", json={"repo_url": repo_url})
+        response = httpx.post(f"{self.base_url}/embed-repo", json={"repo_url": repo_url}, headers=self.headers)
         response.raise_for_status()
         data = response.json()
         logger.info("embed_repository response: %s", data)

@@ -29,6 +29,13 @@ class EmbedResult:
     skipped: int
 
 
+@dataclass
+class RepoCodeSize:
+    repo: str
+    file_count: int
+    total_bytes: int
+
+
 class CodeLibrarianClient:
     def __init__(self, base_url: str, api_key: str):
         self._http = httpx.AsyncClient(
@@ -61,6 +68,22 @@ class CodeLibrarianClient:
         data = response.json()
         logger.info("embed_repository response: %s", data)
         return EmbedResult(**data)
+
+    async def get_file_tree(self, repo_url: str) -> dict:
+        repo_url = self._normalize_github_url(repo_url)
+        response = await self._http.get("/repo-file-tree", params={"repo_url": repo_url})
+        response.raise_for_status()
+        data = response.json()
+        logger.info("get_file_tree response: %s", data)
+        return data
+
+    async def get_code_size(self, repo_url: str) -> RepoCodeSize:
+        repo_url = self._normalize_github_url(repo_url)
+        response = await self._http.get("/repo-code-size", params={"repo_url": repo_url})
+        response.raise_for_status()
+        data = response.json()
+        logger.info("get_code_size response: %s", data)
+        return RepoCodeSize(**data)
 
     def _normalize_github_url(self, url: str) -> str:
         match = re.search(r"github\.com/([^/]+/[^/]+)", url)

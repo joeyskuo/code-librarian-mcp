@@ -47,3 +47,30 @@ def register_tools(mcp: FastMCP):
         Returns: repo (str), files_found (int), stored (int), skipped (int).
         """
         return vars(await client.embed_repository(repo_url))
+
+    @mcp.tool()
+    async def get_repository_file_tree(repo_url: str) -> dict:
+        """Get a flattened list of code-related files in a repository.
+
+        Use this to quickly understand the structure of a repository without
+        fetching file contents. Lighter than a full embed or query.
+
+        repo_url must be a GitHub repository URL (e.g. https://github.com/owner/repo).
+
+        Returns: repo (str), truncated (bool), files (list of file paths).
+        """
+        return await client.get_file_tree(repo_url)
+
+    @mcp.tool()
+    async def get_repository_code_size(repo_url: str) -> dict:
+        """Get the code size of a repository: file count and total bytes.
+
+        Use this only if check_repository_status shows 0 embeddings and you need
+        to decide whether to proceed with embedding — e.g. if the repo has too
+        many files or exceeds an allowed file size total.
+
+        repo_url must be a GitHub repository URL (e.g. https://github.com/owner/repo).
+
+        Returns: repo (str), file_count (int), total_bytes (int).
+        """
+        return vars(await client.get_code_size(repo_url))

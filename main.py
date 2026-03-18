@@ -10,7 +10,7 @@ logging.basicConfig(level=logging.INFO)
 from opentelemetry import trace
 from opentelemetry.sdk.resources import Resource
 from opentelemetry.sdk.trace import TracerProvider
-from opentelemetry.sdk.trace.export import BatchSpanProcessor
+from opentelemetry.sdk.trace.export import BatchSpanProcessor, ConsoleSpanExporter, SimpleSpanProcessor
 from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
 
 _auth = base64.b64encode(
@@ -24,6 +24,7 @@ _exporter = OTLPSpanExporter(
 
 _provider = TracerProvider(resource=Resource({"service.name": "code-librarian-mcp"}))
 _provider.add_span_processor(BatchSpanProcessor(_exporter))
+_provider.add_span_processor(SimpleSpanProcessor(ConsoleSpanExporter()))
 trace.set_tracer_provider(_provider)
 
 from server import mcp

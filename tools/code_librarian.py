@@ -7,7 +7,7 @@ def register_tools(mcp: FastMCP):
     client = CodeLibrarianClient(base_url=os.environ["CL_API_URL"], api_key=os.environ["CL_API_KEY"])
 
     @mcp.tool()
-    def query_repository_code(query: str, repo_url: str) -> list[dict]:
+    async def query_repository_code(query: str, repo_url: str) -> list[dict]:
         """Search the codebase to find code relevant to answering a question about a repository.
 
         Use this to retrieve context from the codebase when answering questions about how
@@ -19,11 +19,11 @@ def register_tools(mcp: FastMCP):
 
         Returns a list of matches, each with: filename, file_path, file_url, content, similarity (0-1).
         """
-        results = client.query_repo(query, repo_url)
+        results = await client.query_repo(query, repo_url)
         return [vars(r) for r in results]
 
     @mcp.tool()
-    def check_repository_status(repo_url: str) -> dict:
+    async def check_repository_status(repo_url: str) -> dict:
         """Check if a repository has embeddings, so that it is able to be queried.
 
         Use this before querying a repository to confirm it has been embedded.
@@ -33,10 +33,10 @@ def register_tools(mcp: FastMCP):
 
         Returns: repo (str), embeddings (int).
         """
-        return vars(client.check_repository_status(repo_url))
+        return vars(await client.check_repository_status(repo_url))
 
     @mcp.tool()
-    def embed_repository(repo_url: str) -> dict:
+    async def embed_repository(repo_url: str) -> dict:
         """Embed a GitHub repository so it can be queried.
 
         Initiates the embedding process for all code files in the repository.
@@ -46,4 +46,4 @@ def register_tools(mcp: FastMCP):
 
         Returns: repo (str), files_found (int), stored (int), skipped (int).
         """
-        return vars(client.embed_repository(repo_url))
+        return vars(await client.embed_repository(repo_url))

@@ -44,7 +44,7 @@ def register_tools(mcp: FastMCP):
 
         repo_url must be a GitHub repository URL (e.g. https://github.com/owner/repo).
 
-        Returns: repo (str), files_found (int), stored (int), skipped (int).
+        Returns: repo (str), status (str), files (int).
         """
         return vars(await client.embed_repository(repo_url))
 

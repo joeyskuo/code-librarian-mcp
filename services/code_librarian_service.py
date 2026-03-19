@@ -26,9 +26,8 @@ class RepoStatus:
 @dataclass
 class EmbedResult:
     repo: str
-    files_found: int
-    stored: int
-    skipped: int
+    status: str
+    files: int
 
 
 @dataclass

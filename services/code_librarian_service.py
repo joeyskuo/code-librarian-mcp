@@ -13,6 +13,8 @@ class RepoQueryResult:
     file_url: str
     content: str
     similarity: float
+    start_line: int
+    end_line: int
 
 
 @dataclass

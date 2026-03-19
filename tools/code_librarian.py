@@ -17,7 +17,7 @@ def register_tools(mcp: FastMCP):
 
         repo_url must be a GitHub repository URL (e.g. https://github.com/owner/repo).
 
-        Returns a list of matches, each with: filename, file_path, file_url, content, similarity (0-1).
+        Returns a list of matches, each with: filename, file_path, file_url, content, similarity (0-1), start_line, end_line.
         """
         results = await client.query_repo(query, repo_url)
         return [vars(r) for r in results]

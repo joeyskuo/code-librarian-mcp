@@ -72,7 +72,7 @@ class CodeLibrarianClient:
 
     async def embed_repository(self, repo_url: str) -> AsyncGenerator[EmbedFileEvent | EmbedResult, None]:
         repo_url = self._normalize_github_url(repo_url)
-        async with self._http.stream("POST", "/embed-repo", json={"repo_url": repo_url}, timeout=600.0) as response:
+        async with self._http.stream("POST", "/embed-repo", json={"repo_url": repo_url}, timeout=180.0) as response:
             response.raise_for_status()
             async for line in response.aiter_lines():
                 if not line:

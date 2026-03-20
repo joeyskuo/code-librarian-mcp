@@ -1,7 +1,9 @@
 import re
+import json
 import httpx
 import logging
 from dataclasses import dataclass
+from typing import AsyncGenerator
 
 logger = logging.getLogger(__name__)
 
@@ -22,6 +24,12 @@ class RepoStatus:
     repo: str
     embeddings: int
 
+
+@dataclass
+class EmbedFileEvent:
+    path: str
+    index: int
+    total: int
 
 @dataclass
 class EmbedResult:
@@ -62,13 +70,19 @@ class CodeLibrarianClient:
         logger.info("check_repository_status response: %s", data)
         return RepoStatus(**data)
 
-    async def embed_repository(self, repo_url: str) -> EmbedResult:
+    async def embed_repository(self, repo_url: str) -> AsyncGenerator[EmbedFileEvent | EmbedResult, None]:
         repo_url = self._normalize_github_url(repo_url)
-        response = await self._http.post("/embed-repo", json={"repo_url": repo_url})
-        response.raise_for_status()
-        data = response.json()
-        logger.info("embed_repository response: %s", data)
-        return EmbedResult(**data)
+        async with self._http.stream("POST", "/embed-repo", json={"repo_url": repo_url}, timeout=600.0) as response:
+            response.raise_for_status()
+            async for line in response.aiter_lines():
+                if not line:
+                    continue
+                event = json.loads(line)
+                if event["type"] == "file":
+                    yield EmbedFileEvent(path=event["path"], index=event["index"], total=event["total"])
+                elif event["type"] == "done":
+                    logger.info("embed_repository done: %s", event)
+                    yield EmbedResult(repo=event["repo"], status=event["status"], files=event["files"])
 
     async def get_file_tree(self, repo_url: str) -> dict:
         repo_url = self._normalize_github_url(repo_url)

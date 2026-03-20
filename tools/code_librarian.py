@@ -1,6 +1,6 @@
 import os
-from fastmcp import FastMCP
-from services.code_librarian_service import CodeLibrarianClient
+from fastmcp import FastMCP, Context
+from services.code_librarian_service import CodeLibrarianClient, EmbedResult
 
 
 def register_tools(mcp: FastMCP):
@@ -36,7 +36,7 @@ def register_tools(mcp: FastMCP):
         return vars(await client.check_repository_status(repo_url))
 
     @mcp.tool()
-    async def embed_repository(repo_url: str) -> dict:
+    async def embed_repository(repo_url: str, ctx: Context) -> dict:
         """Embed a GitHub repository so it can be queried.
 
         Initiates the embedding process for all code files in the repository.
@@ -46,7 +46,13 @@ def register_tools(mcp: FastMCP):
 
         Returns: repo (str), status (str), files (int).
         """
-        return vars(await client.embed_repository(repo_url))
+        result: EmbedResult | None = None
+        async for event in client.embed_repository(repo_url):
+            if isinstance(event, EmbedResult):
+                result = event
+            else:
+                await ctx.report_progress(progress=event.index, total=event.total, message=event.path)
+        return vars(result)
 
     @mcp.tool()
     async def get_repository_file_tree(repo_url: str) -> dict:

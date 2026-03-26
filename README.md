@@ -1,10 +1,10 @@
 # code-librarian-mcp
 
-An [MCP](https://modelcontextprotocol.io) server that exposes RAG-powered code search as tools for AI assistants. Built with [FastMCP](https://github.com/jlowin/fastmcp), targets the Claude API via streamable-http transport.
+An [MCP](https://modelcontextprotocol.io) server that exposes code embeddding and vector search operations as tools for AI assistants. Built with [FastMCP](https://github.com/jlowin/fastmcp), targets the Claude API via streamable-http transport.
 
 ## What it does
 
-Connects an AI assistant (Claude) to a RAG backend so it can search GitHub repositories by semantic meaning rather than exact text. The assistant can embed a repo, check its status, and query it in natural language — all via MCP tool calls.
+Connects an AI assistant (Claude) to a tool server so it can answer contextual questions about GitHub repositories. The assistant can embed the code files in a repo, perform a vector search with an embedded query, and generate a response using the top results of the semantic search.
 
 ## Tools exposed
 
@@ -14,7 +14,7 @@ Connects an AI assistant (Claude) to a RAG backend so it can search GitHub repos
 | `check_repository_status` | Check whether a repo has been embedded and is queryable |
 | `embed_repository` | Trigger embedding for a GitHub repo; streams file-by-file progress |
 | `get_repository_file_tree` | List all code files in a repo without fetching content |
-| `get_repository_code_size` | Get file count and total byte size — useful before deciding to embed |
+| `get_repository_code_size` | Get file count and total byte size — used to determine repo size/file_count is within limits |
 
 ## Architecture
 

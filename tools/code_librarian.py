@@ -1,6 +1,7 @@
 import os
 from fastmcp import FastMCP, Context
-from services.code_librarian_service import CodeLibrarianClient, EmbedResult
+from services.code_librarian_service import CodeLibrarianClient
+from services.models import EmbedResult
 
 
 def register_tools(mcp: FastMCP):

@@ -29,7 +29,7 @@ async def test_query_repo_returns_results(client):
             "end_line": 1,
         }
     ]
-    respx.post(f"{BASE_URL}/query-repo").mock(return_value=httpx.Response(200, json=payload))
+    respx.post(f"{BASE_URL}/repos/query").mock(return_value=httpx.Response(200, json=payload))
 
     results = await client.query_repo("hello function", "https://github.com/owner/repo")
 
@@ -42,7 +42,7 @@ async def test_query_repo_returns_results(client):
 @respx.mock
 @pytest.mark.asyncio
 async def test_query_repo_raises_on_http_error(client):
-    respx.post(f"{BASE_URL}/query-repo").mock(return_value=httpx.Response(500))
+    respx.post(f"{BASE_URL}/repos/query").mock(return_value=httpx.Response(500))
 
     with pytest.raises(httpx.HTTPStatusError):
         await client.query_repo("hello", "https://github.com/owner/repo")
@@ -52,7 +52,7 @@ async def test_query_repo_raises_on_http_error(client):
 @pytest.mark.asyncio
 async def test_check_repository_status(client):
     payload = {"repo": "https://github.com/owner/repo", "embeddings": 42}
-    respx.get(f"{BASE_URL}/repo-status").mock(return_value=httpx.Response(200, json=payload))
+    respx.get(f"{BASE_URL}/repos/status").mock(return_value=httpx.Response(200, json=payload))
 
     result = await client.check_repository_status("https://github.com/owner/repo")
 
@@ -64,7 +64,7 @@ async def test_check_repository_status(client):
 @pytest.mark.asyncio
 async def test_get_code_size(client):
     payload = {"repo": "https://github.com/owner/repo", "file_count": 10, "total_bytes": 50000}
-    respx.get(f"{BASE_URL}/repo-code-size").mock(return_value=httpx.Response(200, json=payload))
+    respx.get(f"{BASE_URL}/repos/code-size").mock(return_value=httpx.Response(200, json=payload))
 
     result = await client.get_code_size("https://github.com/owner/repo")
 
@@ -77,7 +77,7 @@ async def test_get_code_size(client):
 @pytest.mark.asyncio
 async def test_get_file_tree(client):
     payload = {"repo": "https://github.com/owner/repo", "truncated": False, "files": ["src/main.py", "README.md"]}
-    respx.get(f"{BASE_URL}/repo-file-tree").mock(return_value=httpx.Response(200, json=payload))
+    respx.get(f"{BASE_URL}/repos/file-tree").mock(return_value=httpx.Response(200, json=payload))
 
     result = await client.get_file_tree("https://github.com/owner/repo")
 
@@ -94,7 +94,7 @@ async def test_embed_repository_yields_events_and_result(client):
         json.dumps({"type": "done", "repo": "https://github.com/owner/repo", "status": "ok", "files": 2}),
     ]
     body = "\n".join(lines) + "\n"
-    respx.post(f"{BASE_URL}/embed-repo").mock(return_value=httpx.Response(200, text=body))
+    respx.post(f"{BASE_URL}/repos/embed").mock(return_value=httpx.Response(200, text=body))
 
     events = []
     async for event in client.embed_repository("https://github.com/owner/repo"):
@@ -111,7 +111,7 @@ async def test_embed_repository_yields_events_and_result(client):
 @pytest.mark.asyncio
 async def test_query_repo_normalizes_url(client):
     payload = []
-    route = respx.post(f"{BASE_URL}/query-repo").mock(return_value=httpx.Response(200, json=payload))
+    route = respx.post(f"{BASE_URL}/repos/query").mock(return_value=httpx.Response(200, json=payload))
 
     await client.query_repo("test", "https://github.com/owner/repo/tree/main/src")
 

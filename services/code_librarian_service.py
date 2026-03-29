@@ -20,7 +20,7 @@ class CodeLibrarianClient:
 
     async def query_repo(self, query: str, repo_url: str) -> list[RepoQueryResult]:
         repo_url = self._normalize_github_url(repo_url)
-        response = await self._http.post("/query-repo", json={"query": query, "repo_url": repo_url})
+        response = await self._http.post("/repos/query", json={"query": query, "repo_url": repo_url})
         response.raise_for_status()
         data = response.json()
         logger.info("query_repo response: %s", data)
@@ -28,7 +28,7 @@ class CodeLibrarianClient:
 
     async def check_repository_status(self, repo_url: str) -> RepoStatus:
         repo_url = self._normalize_github_url(repo_url)
-        response = await self._http.get("/repo-status", params={"repo_url": repo_url})
+        response = await self._http.get("/repos/status", params={"repo_url": repo_url})
         response.raise_for_status()
         data = response.json()
         logger.info("check_repository_status response: %s", data)
@@ -36,7 +36,7 @@ class CodeLibrarianClient:
 
     async def embed_repository(self, repo_url: str) -> AsyncGenerator[EmbedFileEvent | EmbedResult, None]:
         repo_url = self._normalize_github_url(repo_url)
-        async with self._http.stream("POST", "/embed-repo", json={"repo_url": repo_url}, timeout=180.0) as response:
+        async with self._http.stream("POST", "/repos/embed", json={"repo_url": repo_url}, timeout=180.0) as response:
             response.raise_for_status()
             async for line in response.aiter_lines():
                 if not line:
@@ -50,7 +50,7 @@ class CodeLibrarianClient:
 
     async def get_file_tree(self, repo_url: str) -> dict:
         repo_url = self._normalize_github_url(repo_url)
-        response = await self._http.get("/repo-file-tree", params={"repo_url": repo_url})
+        response = await self._http.get("/repos/file-tree", params={"repo_url": repo_url})
         response.raise_for_status()
         data = response.json()
         logger.info("get_file_tree response: %s", data)
@@ -58,7 +58,7 @@ class CodeLibrarianClient:
 
     async def get_code_size(self, repo_url: str) -> RepoCodeSize:
         repo_url = self._normalize_github_url(repo_url)
-        response = await self._http.get("/repo-code-size", params={"repo_url": repo_url})
+        response = await self._http.get("/repos/code-size", params={"repo_url": repo_url})
         response.raise_for_status()
         data = response.json()
         logger.info("get_code_size response: %s", data)

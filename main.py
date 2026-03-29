@@ -1,10 +1,8 @@
 import logging
 import os
-from dotenv import load_dotenv
-
-load_dotenv()
 logging.basicConfig(level=logging.INFO)
 
+from config import settings
 from services.telemetry import setup_telemetry
 setup_telemetry()
 

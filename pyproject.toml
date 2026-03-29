@@ -5,7 +5,7 @@ requires-python = ">=3.11"
 dependencies = [
     "fastmcp",
     "httpx",
-    "python-dotenv",
+    "pydantic-settings",
     "opentelemetry-sdk",
     "opentelemetry-exporter-otlp-proto-http",
 ]

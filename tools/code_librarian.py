@@ -53,6 +53,8 @@ def register_tools(mcp: FastMCP):
                 result = event
             else:
                 await ctx.report_progress(progress=event.index, total=event.total, message=event.path)
+        if result is None:
+            raise RuntimeError("Embed stream ended without a completion event")
         return vars(result)
 
     @mcp.tool()

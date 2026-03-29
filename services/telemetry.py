@@ -1,14 +1,15 @@
 import base64
 import logging
-import os
+
+from config import settings
 
 logger = logging.getLogger(__name__)
 
 
 def setup_telemetry() -> None:
-    public_key = os.environ.get("LANGFUSE_PUBLIC_KEY")
-    secret_key = os.environ.get("LANGFUSE_SECRET_KEY")
-    base_url = os.environ.get("LANGFUSE_BASE_URL")
+    public_key = settings.langfuse_public_key
+    secret_key = settings.langfuse_secret_key
+    base_url = settings.langfuse_base_url
 
     if not all([public_key, secret_key, base_url]):
         logger.info("Langfuse env vars not set — skipping telemetry")

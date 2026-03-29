@@ -1,11 +1,11 @@
-import os
 from fastmcp import FastMCP, Context
 from services.code_librarian_service import CodeLibrarianClient
+from config import settings
 from services.models import EmbedResult
 
 
 def register_tools(mcp: FastMCP):
-    client = CodeLibrarianClient(base_url=os.environ["CL_API_URL"], api_key=os.environ["CL_API_KEY"])
+    client = CodeLibrarianClient(base_url=settings.cl_api_url, api_key=settings.cl_api_key)
 
     @mcp.tool()
     async def query_repository_code(query: str, repo_url: str) -> list[dict]:

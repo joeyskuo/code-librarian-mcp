@@ -1,5 +1,4 @@
 import logging
-import os
 logging.basicConfig(level=logging.INFO)
 
 from config import settings
@@ -9,6 +8,4 @@ setup_telemetry()
 from server import mcp
 
 if __name__ == "__main__":
-    host = os.environ.get("HOST", "0.0.0.0")
-    port = int(os.environ.get("PORT", 8001))
-    mcp.run(transport="streamable-http", host=host, port=port)
+    mcp.run(transport="streamable-http", host=settings.host, port=settings.port)

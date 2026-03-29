@@ -75,7 +75,7 @@ def register_tools(mcp: FastMCP):
         """Get the code size of a repository: file count and total bytes.
 
         Use this only if check_repository_status shows 0 embeddings and you need
-        to decide whether to proceed with embedding — e.g. if the repo has too
+        to decide whether to proceed with embedding. e.g. if the repo has too
         many files or exceeds an allowed file size total.
 
         repo_url must be a GitHub repository URL (e.g. https://github.com/owner/repo).

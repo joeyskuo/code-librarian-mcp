@@ -12,7 +12,7 @@ def setup_telemetry() -> None:
     base_url = settings.langfuse_base_url
 
     if not all([public_key, secret_key, base_url]):
-        logger.info("Langfuse env vars not set — skipping telemetry")
+        logger.info("Langfuse env vars not set. Telemetry inactive")
         return
 
     from opentelemetry import trace
@@ -29,4 +29,4 @@ def setup_telemetry() -> None:
     provider = TracerProvider(resource=Resource({"service.name": "code-librarian-mcp"}))
     provider.add_span_processor(BatchSpanProcessor(exporter))
     trace.set_tracer_provider(provider)
-    logger.info("Telemetry configured — exporting traces to %s", base_url)
+    logger.info("Telemetry configured: exporting traces to %s", base_url)

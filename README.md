@@ -10,11 +10,11 @@ Connects an AI assistant (Claude) to a tool server so it can answer contextual q
 
 | Tool | Description |
 |---|---|
-| `query_repository_code` | Semantic search over embedded code — returns matching snippets with file path, URL, similarity score, and line range |
+| `query_repository_code` | Semantic search over embedded code; returns matching snippets with file path, URL, similarity score, and line range |
 | `check_repository_status` | Check whether a repo has been embedded and is queryable |
 | `embed_repository` | Trigger embedding for a GitHub repo; streams file-by-file progress |
 | `get_repository_file_tree` | List all code files in a repo without fetching content |
-| `get_repository_code_size` | Get file count and total byte size — used to determine repo size/file_count is within limits |
+| `get_repository_code_size` | Get file count and total byte size; used to determine whether the repo is within embedding limits |
 
 ## Architecture
 
@@ -28,18 +28,18 @@ code-librarian-mcp          ← this repo
 Tool server      ← embedding and repo-operations service
 ```
 
-- `main.py` — entrypoint: loads env, configures OpenTelemetry (must run before FastMCP import), starts server
-- `server.py` — FastMCP app instance with static token auth
-- `tools/code_librarian.py` — MCP tool definitions; thin wrappers that delegate to the service client
-- `services/code_librarian_service.py` — async HTTP client (`httpx`) wrapping the RAG API
-- `services/models.py` — shared dataclasses (`RepoQueryResult`, `EmbedResult`, etc.)
+- `main.py`: entrypoint; loads env, configures OpenTelemetry (must run before FastMCP import), starts server
+- `server.py`: FastMCP app instance with static token auth
+- `tools/code_librarian.py`: MCP tool definitions; thin wrappers that delegate to the service client
+- `services/code_librarian_service.py`: async HTTP client (`httpx`) wrapping the RAG API
+- `services/models.py`: shared dataclasses (`RepoQueryResult`, `EmbedResult`, etc.)
 
 ## Tech stack
 
 - **Python 3.11+**
-- **FastMCP** — MCP server framework
-- **httpx** — async HTTP client with connection pooling
-- **OpenTelemetry** — distributed tracing, exported to Langfuse via OTLP
+- **FastMCP**: MCP server framework
+- **httpx**: async HTTP client with connection pooling
+- **OpenTelemetry**: distributed tracing, exported to Langfuse via OTLP
 
 ## Setup
 
